@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Layout */
+  .layout-container {
+    @apply min-h-screen bg-white dark:bg-gray-900 relative;
+  }
+
+  .content-container {
+    @apply p-8 transition-colors duration-500;
+  }
+
+  .content-wrapper {
+    @apply max-w-4xl mx-auto;
+  }
+
+  /* Card */
+  .detail-card {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6;
+  }
+
+  /* Title */
+  .detail-title {
+    @apply text-2xl font-bold text-gray-900 dark:text-white;
+  }
+
+  /* Status Badge */
+  .status-badge {
+    @apply px-4 py-2 rounded-full text-sm font-medium;
+  }
+
+  .status-badge-progress {
+    @apply bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100;
+  }
+
+  .status-badge-waiting {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100;
+  }
+
+  .status-badge-complete {
+    @apply bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100;
+  }
+
+  /* Content Section */
+  .detail-section {
+    @apply space-y-4;
+  }
+
+  .detail-label {
+    @apply text-gray-600 dark:text-gray-400;
+  }
+
+  .detail-value {
+    @apply font-bold text-lg;
+  }
+
+  /* Progress Bar */
+  .progress-bar {
+    @apply w-64 h-4 bg-gray-200 rounded-full overflow-hidden;
+  }
+
+  .progress-bar-fill {
+    @apply h-full bg-blue-500 transition-all duration-500;
+  }
+
+  /* Team Members */
+  .team-member {
+    @apply px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm;
+  }
+
+  /* Back Button */
+  .back-button {
+    @apply px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg
+      hover:bg-gray-300 dark:hover:bg-gray-600
+      transition-colors duration-300;
+  }
+}
+
+
+
+/* 종료된 프로젝트 스타일 */
+.project-ended {
+  opacity: 0.75;
+  filter: grayscale(100%);
+  border-left-color: rgb(239 68 68); /* red-500 */
+  position: relative;
+}
+
+.project-ended:hover {
+  filter: grayscale(0%);
+}
+
+.project-ended::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgb(17 24 39); /* gray-900 */
+  opacity: 0.1;
+  border-radius: 0.75rem; /* rounded-xl */
+}
+
+/* 필터링된 프로젝트 카드 애니메이션만 유지 */
+.filtered-project {
+  animation: fadeInScale 0.3s ease-in-out;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* 필터링된 프로젝트 카드 애니메이션 */
+.filtered-project {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 필터링 애니메이션 지연 효과 */
+.filtered-project:nth-child(1) { animation-delay: 0s; }
+.filtered-project:nth-child(2) { animation-delay: 0.05s; }
+.filtered-project:nth-child(3) { animation-delay: 0.1s; }
+.filtered-project:nth-child(4) { animation-delay: 0.15s; }
+.filtered-project:nth-child(n+5) { animation-delay: 0.2s; }
