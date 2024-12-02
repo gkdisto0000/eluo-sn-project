@@ -1,15 +1,39 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { Auth } from '@/app/components/Auth'
+import { useTheme } from '@/context/ThemeContext'
 
-export default function Home() {
-  const router = useRouter()
+export default function LoginPage() {
+  const { darkMode, toggleTheme } = useTheme()
 
-  useEffect(() => {
-    // 루트 페이지 접속 시 로그인 페이지로 리다이렉트
-    router.push('/login')
-  }, [router])
-
-  return null
-}
+  return (
+    <div className="relative">
+      <Auth />
+      <button
+        onClick={toggleTheme}
+        className="fixed bottom-8 right-8 
+          px-4 py-2 rounded-full
+          transition-all duration-200 ease-in-out
+          bg-gray-200 dark:bg-gray-700 
+          text-gray-900 dark:text-white 
+          hover:bg-gray-300 dark:hover:bg-gray-600
+          shadow-lg hover:shadow-xl
+          flex items-center justify-center
+          transform hover:scale-105
+          z-50"
+      >
+        {darkMode ? (
+          <>
+            <span className="mr-2">☀️</span>
+            <span className="hidden md:inline">라이트 모드</span>
+          </>
+        ) : (
+          <>
+            <span className="mr-2">🌙</span>
+            <span className="hidden md:inline">다크 모드</span>
+          </>
+        )}
+      </button>
+    </div>
+  )
+} 
