@@ -5,7 +5,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 const ThemeContext = createContext()
 
 export function ThemeProvider({ children }) {
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState(true)
 
   useEffect(() => {
     // 초기 테마 설정 (로컬 스토리지에서 가져오기)

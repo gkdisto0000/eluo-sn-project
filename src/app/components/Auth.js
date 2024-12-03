@@ -1,9 +1,9 @@
 'use client'
 
 import { useFirebase } from '@/context/FirebaseContext'
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { getFirestore, doc, getDoc } from 'firebase/firestore'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/app/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/context/ThemeContext'
@@ -13,7 +13,7 @@ import LogoWhite from '@/app/images/logo_square_wh.png'
 
 export function Auth() {
   const { auth } = useFirebase()
-  const { user, loading } = useAuth()
+  const { user } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -22,6 +22,12 @@ export function Auth() {
   const [passwordMatch, setPasswordMatch] = useState(false)
   const router = useRouter()
   const { darkMode } = useTheme()
+
+  useEffect(() => {
+    if (user) {
+      router.push('/main')
+    }
+  }, [user, router])
 
   const handleAuth = async (e) => {
     e.preventDefault()
@@ -44,23 +50,7 @@ export function Auth() {
         alert('회원가입이 성공적으로 완료되었습니다!')
         console.log('회원가입 성공')
       } else {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password)
-        
-        try {
-          const db = getFirestore()
-          const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid))
-          
-          if (userDoc.exists() && userDoc.data().role === 'admin') {
-            alert('관리자로 로그인되었습니다')
-          } else {
-            alert('로그인 성공!')
-          }
-        } catch (firestoreError) {
-          console.error('Firestore 조회 실패:', firestoreError)
-          alert('로그인 성공!')
-        }
-        
-        console.log('로그인 성공')
+        await signInWithEmailAndPassword(auth, email, password)
         router.push('/main')
       }
       setEmail('')
@@ -69,7 +59,6 @@ export function Auth() {
     } catch (error) {
       console.error('Error during auth:', error)
       
-      // Firebase 에러 코드에 따른 다른 메시지 표시
       let errorMessage = ''
       switch (error.code) {
         case 'auth/email-already-in-use':
@@ -90,24 +79,12 @@ export function Auth() {
         case 'auth/wrong-password':
           errorMessage = '잘못된 비밀번호입니다'
           break
-        case 'auth/operation-not-allowed':
-          errorMessage = 'Google 로그인이 활성화되지 않았습니다. 관리자에게 문의하세요.'
-          break
         default:
           errorMessage = '로그인/회원가입 중 오류가 발생했습니다'
       }
       
       alert(errorMessage)
       setError(errorMessage)
-    }
-  }
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth)
-      console.log('로그아웃 성공')
-    } catch (error) {
-      console.error('로그아웃 실패:', error)
     }
   }
 
@@ -137,32 +114,6 @@ export function Auth() {
       console.error('Google 로그인 실패:', error)
       setError('Google 로그인 중 오류가 발생했습니다')
     }
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    )
-  }
-
-  if (user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-96">
-          <p className="text-center mb-4">
-            로그인됨: {user.email}
-          </p>
-          <button
-            onClick={handleLogout}
-            className="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600"
-          >
-            로그아웃
-          </button>
-        </div>
-      </div>
-    )
   }
 
   return (
@@ -251,12 +202,12 @@ export function Auth() {
                   minLength={6}
                 />
                 {passwordConfirm && !passwordMatch && (
-                  <p className="text-red-500 text-sm mt-1 text-gray-900 dark:text-white transition-colors duration-500">
+                  <p className="text-red-500 text-sm mt-1">
                     비밀번호가 일치하지 않습니다
                   </p>
                 )}
                 {passwordConfirm && passwordMatch && (
-                  <p className="text-green-500 text-sm mt-1 text-gray-900 dark:text-white transition-colors duration-500">
+                  <p className="text-green-500 text-sm mt-1">
                     비밀번호가 일치합니다
                   </p>
                 )}
